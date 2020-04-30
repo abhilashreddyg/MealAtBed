@@ -1,0 +1,172 @@
+<html>
+    
+    <head>
+        <script>
+            function  next1()
+           {
+                   
+                    var addres1=document.getElementById("address1").Value;
+                    localStorage.setItem("adrs1", addres1);
+                    return false;
+                    
+                }
+               </script>
+        <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.19.0.min.js"></script>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+    </head>
+    <header class="company">
+        <img id="image" src="Logo.png" alt="logo" width="100" height="90">
+        <center>
+            <span>
+            <h3><font color="FF7E00"> MealAtBed</font></h3></span>
+        </center>
+        </header>
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="homepage.html">Home</a>
+            <a href="#">Your Profile</a>
+            <a href="#">Recent Orders</a>
+            <a href="#">Saved Address</a>
+            <a href="#">Saved Cards</a>
+            <a href="#">Change Password</a>
+            <a href="example.html">Logout</a>
+        </div>
+          
+          <div id="main">
+            <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
+          </div>
+          
+          <script>
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+          }
+          
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginLeft= "0";
+          }
+          </script>
+        <style>
+            .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #111;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+        }
+        
+        .sidenav a {
+          padding: 8px 8px 8px 32px;
+          text-decoration: none;
+          font-size: 25px;
+          color: #818181;
+          display: block;
+          transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+          color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+        }
+        
+        #main {
+          transition: margin-left .5s;
+          padding: 16px;
+        }
+        @media screen and (max-height: 450px) {
+          .sidenav {padding-top: 15px;}
+          .sidenav a {font-size: 18px;}
+        }
+        </style>
+    <body>
+        <center>
+        <form action="summary2.html">
+            <div>Please Enter the Address below</div><br>
+            <span>Address Type</span>
+            <input type="radio" id="type" name="adrstype" value="Home"><label for="home">Home</label>
+            <input type="radio" id="type" name="adrstype" value="Office"><label for="office">Office</label><br>
+            <input type="text" id="address1" placeholder="Apt/flat no."><br><br>
+            <input type="text" id="address2" placeholder="street/area"><br><br>
+            <input type="text" id="pincode" placeholder="Area Code"><br><br>
+            <button id="adnext" type="submit" onclick="next1">Next</button>
+        </form>
+    </center>
+        <script>
+            var pubnub = new PubNub({publishKey:   'pub-c-de03fa9d-8ff3-4793-ab32-ecb8b66021f5', subscribeKey: 'sub-c-c147d9a8-89a9-11ea-8e98-72774568d584'});
+        function ipLookUp () {
+            $.ajax('http://ip-api.com/json')
+            .then(
+                function success(response) {
+                    console.log('User\'s Location Data is ', response);
+                    console.log('User\'s Country', response.country);
+                    getAdress(response.lat, response.lon)
+          },
+          
+                function fail(data, status) {
+                    console.log('Request failed.  Returned status of',
+                                status);
+                }
+            );
+          }
+          function getAddress (latitude, longitude) {
+            $.ajax('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&key=' + 
+                    GOOGLE_MAP_KEY)
+            .then(
+              function success (response) {
+                console.log('User\'s Address Data is ', response)
+              },
+              function fail (status) {
+                console.log('Request failed.  Returned status of',
+                            status)
+              }
+             )
+          }
+          if ("geolocation" in navigator) {
+            // check if geolocation is supported/enabled on current browser
+            navigator.geolocation.getCurrentPosition(
+             function success(position) {
+               // for when getting location is a success
+               console.log('latitude', position.coords.latitude, 
+                           'longitude', position.coords.longitude);
+               getAddress(position.coords.latitude, 
+                          position.coords.longitude)
+             },
+          function error(error_message) {
+              // for when getting location results in an error
+              console.error('An error has occured while retrievinglocation', error_message)
+              ipLookUp()});
+          } else {
+            // geolocation is not supported
+            // get your location some other way
+            console.log('geolocation is not enabled on this browser')
+            ipLookUp()
+          }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyC7xfBGbE0567jKQJDDRWmBHODlDk-iors&callback=initialize"></script>
+    </body>
+    <style>
+    #adnext{
+        background-color: coral;
+    }
+    </style>
+    
+</html>
+<!--var address2=document.getElementById("address2").value;
+             localStorage.setItem("adrs2", address2);
+             var picode=document.getElementById("picode").value
+             localStorage.setItem("id3", pincode); -->
